@@ -11,3 +11,9 @@ wheels/
 
 # caches
 .ruff_cache/
+
+# Audio files
+mp3/
+
+# variables
+.env
