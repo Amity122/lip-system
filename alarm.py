@@ -13,7 +13,7 @@ def validate_time(hour, minutes):
 
 
 alarm_hour = int(settings.SHUTDOWN_TIME.split(":")[0])
-alarm_minutes = int(settings.SHUTDOWN_TIME.split(":")[1] - 30)
+alarm_minutes = int(settings.SHUTDOWN_TIME.split(":")[1]) - 30
 
 alarm_hour, alarm_minutes = validate_time(alarm_hour, alarm_minutes)
 
