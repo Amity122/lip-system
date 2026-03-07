@@ -1,9 +1,10 @@
 import os
 from datetime import datetime
 from abc import ABC, abstractmethod
-import winsound
 from config import settings
-from winsound import SND_FILENAME
+from playsound3 import playsound
+import time
+from alarm import validate_time, play_alarm
 
 
 class DailyRoutine(ABC):
@@ -33,12 +34,17 @@ class DayRoutine(DailyRoutine):
 
     def get_ready(self):
         current_time = datetime.now().strftime("%H:%M")
-
-        if current_time == settings.WORK_TIME:
-            winsound.PlaySound(settings.ALARM_FILE, SND_FILENAME)
+        if current_time == settings.WAKEUP_TIME:
+            playsound(settings.WAKEUP_ALARM)
 
     def time_to_sleep(self):
-        pass
+        current_time = datetime.now().strftime("%H:%M")
+        alarm_hour, alarm_minutes = validate_time(int(settings.NAP_TIME.split(
+            ":")[0]), int(settings.NAP_TIME.split(":")[1]) - 30)
+        print(f"Alarm set for: {alarm_hour}:{alarm_minutes}")
+        if current_time == f"{alarm_hour:02d}:{alarm_minutes:02d}":
+            print("\nIt's almost time to sleep! Please go to bed.")
+            play_alarm(settings.NAP_ALARM)
 
     def work(self):
         pass
@@ -73,6 +79,10 @@ class NightRoutine(DailyRoutine):
 
 # Run this program upon windows startup
 if __name__ == "__main__":
-    day_routine = DayRoutine()
-    night_routine = NightRoutine()
-    night_routine.time_to_sleep()
+    while True:
+        day_routine = DayRoutine()
+        night_routine = NightRoutine()
+        night_routine.time_to_sleep()
+        day_routine.get_ready()
+        day_routine.time_to_sleep()
+        time.sleep(60)  # Check every minute
